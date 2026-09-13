@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>FnB Dashboard Analisis</title>
+  <style>
+    :root{color-scheme:light;font-family:Inter,Arial,sans-serif;background:#f5f7f8}
+    *{box-sizing:border-box}html,body,#app{width:100%;height:100%;margin:0}
+    body{overflow:hidden}
+    iframe{display:block;width:100%;height:100%;border:0;background:#f5f7f8}
+    .loading,.error{position:fixed;inset:0;display:grid;place-items:center;padding:24px;background:#f5f7f8;color:#24313c;text-align:center;z-index:2}
+    .loading-card,.error-card{max-width:520px;padding:24px;border:1px solid #dce3e7;border-radius:16px;background:#fff;box-shadow:0 16px 45px rgba(30,45,55,.10)}
+    .spinner{width:32px;height:32px;margin:0 auto 14px;border:3px solid #e6ecef;border-top-color:#a80e13;border-radius:50%;animation:spin .8s linear infinite}
+    h1{margin:0 0 8px;font-size:20px}p{margin:0;color:#657480;line-height:1.55;font-size:14px}
+    a{display:inline-block;margin-top:14px;color:#a80e13;font-weight:700;text-decoration:none}
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="loading" id="loading"><div class="loading-card"><div class="spinner"></div><h1>Memuat FnB Dashboard</h1><p>Menghubungkan ke database Bakerzin…</p></div></div>
+  </div>
+  <script src="config.js"></script>
+  <script>
+    (function(){
+      var cfg=window.BAKERZIN_CONFIG||{},app=document.getElementById('app');
+      if(!cfg.APP_URL){
+        app.innerHTML='<div class="error"><div class="error-card"><h1>URL Web App belum diatur</h1><p>Isi APP_URL pada file config.js dengan URL deployment Apps Script terbaru.</p></div></div>';
+        return;
+      }
+      var frame=document.createElement('iframe');
+      frame.title='FnB Dashboard Analisis';
+      frame.allow='clipboard-read; clipboard-write; fullscreen';
+      frame.referrerPolicy='strict-origin-when-cross-origin';
+      frame.src=cfg.APP_URL+(cfg.APP_URL.indexOf('?')>-1?'&':'?')+'embed=1&v='+encodeURIComponent(cfg.VERSION||Date.now());
+      frame.addEventListener('load',function(){var loading=document.getElementById('loading');if(loading)loading.remove();});
+      app.appendChild(frame);
+      window.setTimeout(function(){
+        var loading=document.getElementById('loading');
+        if(loading)loading.querySelector('p').innerHTML='Proses memuat lebih lama dari biasanya. <a href="'+cfg.APP_URL+'" target="_blank" rel="noopener">Buka dashboard langsung</a>';
+      },12000);
+    })();
+  </script>
+</body>
+</html>
